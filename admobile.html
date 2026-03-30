@@ -27,7 +27,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* HEADER TỐI ƯU - KHÔNG CÒN KHOẢNG TRỐNG THỪA */
         header {
             background: var(--card);
             padding: 12px 20px;
@@ -41,7 +40,6 @@
 
         .header-left { display: flex; align-items: center; gap: 12px; }
         
-        /* Avatar tròn chuyên nghiệp */
         .user-avatar {
             width: 38px; height: 38px;
             background: var(--primary);
@@ -73,7 +71,6 @@
         }
         .btn-logout:active { transform: scale(0.9); background: #ffe4e6; }
 
-        /* BỘ LỌC (DÍNH LIỀN HEADER) */
         .filter-wrapper {
             background: var(--card);
             padding: 8px 16px 12px 16px;
@@ -113,7 +110,6 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
 
-        /* DANH SÁCH */
         .list-container { padding: 16px; min-height: 300px; }
 
         .card {
@@ -148,13 +144,11 @@
         .btn-edit { background: #fef3c7; color: var(--warning); }
         .btn-delete { background: #fee2e2; color: var(--danger); }
 
-        /* PHÂN TRANG */
         .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin: 25px 0; }
         .page-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid #e2e8f0; background: white; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
         .page-btn.active { background: var(--primary); color: white; }
         .page-btn:disabled { opacity: 0.3; }
 
-        /* MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.5); backdrop-filter: blur(4px); z-index: 1000; }
         .modal-content { background: white; position: absolute; bottom: 0; width: 100%; border-radius: 30px 30px 0 0; padding: 25px 20px 40px 20px; box-sizing: border-box; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -217,7 +211,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, onValue, remove, update, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        // Bổ sung Messaging SDK
+        import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDLXIdiehtoCfRKH9qQYU2u5IoRDk7KmxM",
@@ -232,6 +228,36 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const database = getDatabase(app);
+        const messaging = getMessaging(app);
+
+        // --- HÀM CẤU HÌNH THÔNG BÁO ---
+        async function setupMobileNotifications(user) {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    const token = await getToken(messaging, { 
+                        vapidKey: 'BNJTn1RtgeYt0d7YZkqA9-fhE63dI2DX0DXM94-nNW4si16YPlGeKXs6p4QkV4usx2VwdnNnE2PZoE1bHF6rEHE' 
+                    });
+                    
+                    if (token) {
+                        console.log("Mobile Admin Token:", token);
+                        // Lưu token mobile vào database
+                        await set(ref(database, 'admin_tokens/' + user.uid + '/mobile'), {
+                            token: token,
+                            lastUpdated: new Date().toISOString()
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error("Lỗi thông báo trên Mobile:", err);
+            }
+        }
+
+        // Lắng nghe thông báo khi đang mở trang
+        onMessage(messaging, (payload) => {
+            alert(`🔔 KHÁCH ĐĂNG KÝ MỚI:\n${payload.notification.body}`);
+            fetchData();
+        });
 
         let allData = [];
         let currentFilter = 'all';
@@ -241,9 +267,9 @@
         onAuthStateChanged(auth, (user) => {
             if (user) { 
                 document.getElementById('admin-mobile-section').style.display = 'block'; 
-                // Cập nhật tên viết tắt từ email
                 if(user.email) document.getElementById('user-initials').innerText = user.email.substring(0,2).toUpperCase();
                 fetchData(); 
+                setupMobileNotifications(user); // Kích hoạt xin quyền thông báo
             } else { window.location.href = 'login.html'; }
         });
 
