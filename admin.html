@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATA KHÁCH HÀNG</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #dbeafe;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-body: #f1f5f9;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* HEADER SECTION */
+        .header-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .header-panel h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        .stats-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .btn-logout {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+
+        .btn-logout:hover {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        /* FILTER TABS */
+        .filter-section {
+            display: flex;
+            margin-bottom: 20px;
+            background: var(--white);
+            padding: 6px;
+            border-radius: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            width: fit-content;
+            gap: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-tab {
+            padding: 10px 24px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .filter-tab.active {
+            background: #f1f5f9;
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* TABLE STYLES */
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 1rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            display: block;
+        }
+
+        .customer-phone {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge-pickleball {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .badge-bida {
+            background: #faf5ff;
+            color: #7e22ce;
+        }
+
+        /* ACTIONS */
+        .actions-group {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-icon {
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-edit {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .btn-edit:hover {
+            background: #fde68a;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+
+        /* MODAL STYLES */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        #admin-section {
+            display: none;
+        }
+    </style>
+</head>
+<script>
+    // Kiểm tra nếu là thiết bị di động (độ rộng màn hình nhỏ hơn 768px)
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768) {
+        window.location.href = "admobile.html";
+    }
+</script>
+
+<body>
+
+    <div id="admin-section" class="container">
+        <div class="header-panel">
+            <div class="header-left" style="display: flex; align-items: center; gap: 15px;">
+                <div class="user-avatar" id="user-initials">AD</div>
+                <div class="header-info">
+                    <h1>CMS VARSPORT</h1>
+                    <p
+                        style="margin: 0; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">
+                        Quản trị viên</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div id="count-text" class="stats-badge">Đang tải...</div>
+                <a class="btn-logout" id="btn-logout"
+                    style="background: #fff1f2; color: var(--danger); font-weight: 600;">Đăng xuất</a>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <button class="filter-tab active" onclick="setFilter('all', this)">Tất cả</button>
+            <button class="filter-tab" onclick="setFilter('new', this)">Mới</button>
+            <button class="filter-tab" onclick="setFilter('confirming', this)">Đang xác nhận</button>
+            <button class="filter-tab" onclick="setFilter('called', this)">Đã gọi</button>
+        </div>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ngày đăng ký</th>
+                        <th>Dịch vụ</th>
+                        <th>Khách hàng</th>
+                        <th>Địa chỉ</th>
+                        <th>Quy mô</th>
+                        <th>Trạng thái & Ghi chú</th>
+                        <th style="text-align: center;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chỉnh sửa thông tin khách hàng</h2>
+            </div>
+            <input type="hidden" id="edit-id">
+            <div class="form-group">
+                <label>Tên khách hàng</label>
+                <input type="text" id="edit-name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="text" id="edit-phone" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Dịch vụ</label>
+                <select id="edit-sport" class="form-control">
+                    <option value="Pickleball">Pickleball</option>
+                    <option value="Bida">Bida</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Địa chỉ</label>
+                <input type="text" id="edit-address" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Quy mô</label>
+                <input type="text" id="edit-scale" class="form-control">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal()">Hủy</button>
+                <button class="btn btn-save" onclick="saveEdit()">Lưu thay đổi</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="processModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="text-align:center; margin-bottom:20px; font-size:1.1rem; font-weight:800;">XỬ LÝ THÔNG TIN
+                </h2>
+            </div>
+            <input type="hidden" id="process-id">
+            <div class="form-group">
+                <label>Trạng thái xử lý</label>
+                <select id="process-status" class="form-control">
+                    <option value="Đang xác nhận">Đang xác nhận</option>
+                    <option value="Đã xử lí">Đã xử lí</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Ghi chú (Admin)</label>
+                <textarea id="process-note" class="form-control" style="height: 80px; padding-top: 15px; resize: none;"
+                    placeholder="Nhập ghi chú hoặc phản hồi..."></textarea>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:20px">
+                <button class="btn btn-cancel" onclick="closeProcessModal()">Đóng</button>
+                <button id="fast-toggle-btn" class="btn"
+                    style="background:#dcfce7; color:var(--success); border:1px solid transparent;"
+                    onclick="fastToggleStatus()">Đã gọi</button>
+                <button class="btn btn-save" onclick="saveProcess()">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLXIdiehtoCfRKH9qQYU2u5IoRDk7KmxM",
+            authDomain: "quanlykhachhangvar.firebaseapp.com",
+            databaseURL: "https://quanlykhachhangvar-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "quanlykhachhangvar",
+            storageBucket: "quanlykhachhangvar.firebasestorage.app",
+            messagingSenderId: "445137801788",
+            appId: "1:445137801788:web:a5007ec21d3c8671eba939",
+            measurementId: "G-WHYLW6WR6V"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        // --- AUTH CHECK ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('admin-section').style.display = 'block';
+                if (user.email) document.getElementById('user-initials').innerText = user.email.substring(0, 2).toUpperCase();
+                loadData();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        document.getElementById('btn-logout').onclick = () => {
+            signOut(auth).then(() => { window.location.href = 'login.html'; });
+        };
+
+        let allData = [];
+        let currentFilter = 'all';
+
+        // --- LOAD DATA ---
+        function loadData() {
+            const dbRef = ref(database, 'registrations');
+            onValue(dbRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    allData = Object.entries(data).reverse().map(([id, val]) => ({ id, ...val }));
+                } else {
+                    allData = [];
+                }
+                renderTable();
+            });
+        }
+
+        window.setFilter = (filterKey, element) => {
+            currentFilter = filterKey;
+            document.querySelectorAll('.filter-tab').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            renderTable();
+        };
+
+        function renderTable() {
+            const tableBody = document.getElementById('data-table');
+            const countText = document.getElementById('count-text');
+            tableBody.innerHTML = "";
+
+            let filteredData = allData;
+            if (currentFilter === 'new') {
+                filteredData = allData.filter(d => d.status !== 'called' && d.processStatus !== 'Đang xác nhận');
+            } else if (currentFilter === 'confirming') {
+                filteredData = allData.filter(d => d.status !== 'called' && d.processStatus === 'Đang xác nhận');
+            } else if (currentFilter === 'called') {
+                filteredData = allData.filter(d => d.status === 'called');
+            }
+
+            countText.innerText = `Tổng số ${filteredData.length} kết quả`;
+
+            if (filteredData.length > 0) {
+                filteredData.forEach(val => {
+                    const id = val.id;
+                    const isCalled = val.status === 'called';
+                    const row = `
+                        <tr style="${isCalled ? 'background:#f8fafc; opacity:0.8;' : ''}">
+                            <td><span style="font-size:0.75rem; color:var(--text-muted)">${val.timestamp || ''}</span></td>
+                            <td><span class="badge badge-${val.sport?.toLowerCase()}">${val.sport}</span></td>
+                            <td>
+                                <span class="customer-name">${val.name}</span>
+                                <a href="tel:${val.phone}" class="customer-phone">${val.phone}</a>
+                            </td>
+                            <td><span style="font-size:0.875rem">${val.address}</span></td>
+                            <td><span style="font-size:0.875rem">${val.scale}</span></td>
+                            <td>
+                                ${val.processStatus || val.adminNote ? `
+                                <div style="background: ${val.processStatus === 'Đã xử lí' ? '#dcfce7' : '#fef3c7'}; padding: 8px; border-radius: 8px; font-size:0.75rem; border: 1px dashed ${val.processStatus === 'Đã xử lí' ? 'var(--success)' : 'var(--warning)'}; min-width: 120px;">
+                                    <b style="color: ${val.processStatus === 'Đã xử lí' ? 'var(--success)' : 'var(--warning)'};">${val.processStatus || 'Đang xác nhận'}</b>
+                                    <br/>
+                                    <span style="color: var(--text-main);">${val.adminNote || 'Không có'}</span>
+                                </div>
+                                ` : '<span style="color:var(--text-muted); font-size:0.75rem;">Chưa xử lý</span>'}
+                            </td>
+                            <td class="actions-group">
+                                <button class="btn-icon" style="background:${isCalled ? '#cbd5e1' : '#dcfce7'}; color:${isCalled ? '#475569' : '#16a34a'}" onclick="openProcessModal('${id}', ${JSON.stringify(val).replace(/"/g, '&quot;')})" title="Xử lý">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                        ${isCalled ? '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>' : '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>'}
+                                    </svg>
+                                </button>
+                                <button class="btn-icon btn-edit" onclick="openEditModal('${id}', ${JSON.stringify(val).replace(/"/g, '&quot;')})" title="Sửa">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                </button>
+                                <button class="btn-icon btn-delete" onclick="deleteEntry('${id}')" title="Xóa">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 4rem; color:var(--text-muted)">Chưa có dữ liệu khách hàng</td></tr>';
+            }
+        }
+
+        // --- DELETE ---
+        window.deleteEntry = (id) => {
+            if (confirm("Bạn có chắc chắn muốn xóa khách hàng này?")) {
+                remove(ref(database, 'registrations/' + id));
+            }
+        };
+
+        // --- EDIT LOGIC ---
+        window.openEditModal = (id, data) => {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-name').value = data.name;
+            document.getElementById('edit-phone').value = data.phone;
+            document.getElementById('edit-sport').value = data.sport;
+            document.getElementById('edit-address').value = data.address;
+            document.getElementById('edit-scale').value = data.scale;
+            document.getElementById('editModal').style.display = 'block';
+        };
+
+        window.closeModal = () => {
+            document.getElementById('editModal').style.display = 'none';
+        };
+
+        window.saveEdit = () => {
+            const id = document.getElementById('edit-id').value;
+            const updatedData = {
+                name: document.getElementById('edit-name').value,
+                phone: document.getElementById('edit-phone').value,
+                sport: document.getElementById('edit-sport').value,
+                address: document.getElementById('edit-address').value,
+                scale: document.getElementById('edit-scale').value,
+                // Giữ nguyên timestamp cũ
+            };
+
+            update(ref(database, 'registrations/' + id), updatedData)
+                .then(() => {
+                    alert("Cập nhật thành công!");
+                    closeModal();
+                })
+                .catch((error) => alert("Lỗi: " + error.message));
+        };
+
+        window.openProcessModal = (id, data) => {
+            document.getElementById('process-id').value = id;
+            document.getElementById('process-status').value = data.processStatus || 'Đang xác nhận';
+            document.getElementById('process-note').value = data.adminNote || '';
+            const btn = document.getElementById('fast-toggle-btn');
+            if (data.status === 'called') {
+                btn.innerText = 'Khôi phục';
+                btn.style.background = '#cbd5e1';
+                btn.style.color = '#475569';
+                btn.style.borderColor = 'transparent';
+            } else {
+                btn.innerText = 'Xác nhận';
+                btn.style.background = '#dcfce7';
+                btn.style.color = 'var(--success)';
+                btn.style.borderColor = 'transparent';
+            }
+            window.currentProcessData = data;
+            document.getElementById('processModal').style.display = 'block';
+        };
+
+        window.closeProcessModal = () => {
+            document.getElementById('processModal').style.display = 'none';
+        };
+
+        window.saveProcess = () => {
+            const id = document.getElementById('process-id').value;
+            const processStatus = document.getElementById('process-status').value;
+            const adminNote = document.getElementById('process-note').value;
+            const status = processStatus === 'Đã xử lí' ? 'called' : 'new';
+            update(ref(database, 'registrations/' + id), { processStatus, adminNote, status })
+                .then(() => { closeProcessModal(); })
+                .catch((error) => alert("Lỗi: " + error.message));
+        };
+
+        window.fastToggleStatus = () => {
+            const id = document.getElementById('process-id').value;
+            const d = window.currentProcessData;
+            const newStatus = d.status === 'called' ? 'new' : 'called';
+            update(ref(database, 'registrations/' + id), {
+                status: newStatus,
+                processStatus: newStatus === 'called' ? 'Đã xử lí' : 'Đang xác nhận'
+            }).then(() => closeProcessModal());
+        };
+
+        // Đóng modal khi click ra ngoài
+        window.onclick = function (event) {
+            let editModal = document.getElementById('editModal');
+            let processModal = document.getElementById('processModal');
+            if (event.target == editModal) closeModal();
+            if (event.target == processModal) closeProcessModal();
+        }
+    </script>
+</body>
+
+</html>

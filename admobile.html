@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CMS VARSPORT - Mobile Ultimate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #d97706;
+            --radius-card: 20px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding-bottom: 30px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* HEADER TỐI ƯU - KHÔNG CÒN KHOẢNG TRỐNG THỪA */
+        header {
+            background: var(--card);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0; z-index: 100;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        
+        /* Avatar tròn chuyên nghiệp */
+        .user-avatar {
+            width: 38px; height: 38px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        .header-info h1 { font-size: 1rem; margin: 0; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
+        .header-info p { font-size: 0.7rem; margin: 0; color: var(--text-sub); font-weight: 600; text-transform: uppercase; }
+
+        .header-right { display: flex; align-items: center; gap: 8px; }
+
+        .btn-logout {
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            background: #fff1f2;
+            color: var(--danger);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .btn-logout:active { transform: scale(0.9); background: #ffe4e6; }
+
+        /* BỘ LỌC (DÍNH LIỀN HEADER) */
+        .filter-wrapper {
+            background: var(--card);
+            padding: 8px 16px 12px 16px;
+            position: sticky;
+            top: 62px;
+            z-index: 90;
+            border-bottom: 1px solid #f1f5f9;
+            box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05);
+        }
+
+        .filter-bar {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 14px;
+            gap: 4px;
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: 8px 5px;
+            border-radius: 11px;
+            border: none;
+            background: transparent;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .filter-btn.active {
+            background: var(--card);
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        /* DANH SÁCH */
+        .list-container { padding: 16px; min-height: 300px; }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius-card);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+            border-left: 5px solid var(--primary);
+            transition: 0.3s;
+        }
+
+        .card.status-called { background: #f1f5f9; border-left-color: #cbd5e1; opacity: 0.8; }
+
+        .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .badge { font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 8px; text-transform: uppercase; }
+        .badge-pickleball { background: #dbeafe; color: #1e40af; }
+        .badge-bida { background: #f3e8ff; color: #6b21a8; }
+        .date { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; }
+
+        .name { font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin: 0; }
+        .phone-link { display: block; font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; margin: 8px 0; }
+        
+        .info-row { font-size: 0.85rem; color: var(--text-sub); margin-top: 5px; display: flex; align-items: center; gap: 8px; }
+        .info-icon { width: 15px; color: var(--primary); }
+
+        .actions { margin-top: 18px; padding-top: 15px; border-top: 1px solid #f1f5f9; display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 10px; }
+        .btn-action { height: 46px; border: none; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; gap: 3px; }
+        
+        .btn-check { background: #dcfce7; color: var(--success); }
+        .btn-check.is-called { background: #cbd5e1; color: #475569; }
+        .btn-edit { background: #fef3c7; color: var(--warning); }
+        .btn-delete { background: #fee2e2; color: var(--danger); }
+
+        /* PHÂN TRANG */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin: 25px 0; }
+        .page-btn { width: 38px; height: 38px; border-radius: 10px; border: 1px solid #e2e8f0; background: white; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
+        .page-btn.active { background: var(--primary); color: white; }
+        .page-btn:disabled { opacity: 0.3; }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.5); backdrop-filter: blur(4px); z-index: 1000; }
+        .modal-content { background: white; position: absolute; bottom: 0; width: 100%; border-radius: 30px 30px 0 0; padding: 25px 20px 40px 20px; box-sizing: border-box; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .form-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 5px; }
+        .form-input { width: 100%; height: 50px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 0 15px; margin-bottom: 15px; font-size: 1rem; box-sizing: border-box; font-family: inherit; }
+
+        #admin-mobile-section { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="admin-mobile-section">
+        <header>
+            <div class="header-left">
+                <div class="user-avatar" id="user-initials">AD</div>
+                <div class="header-info">
+                    <h1>CMS VARSPORT</h1>
+                    <p>Quản trị viên</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn-logout" onclick="handleLogout()"><i data-lucide="log-out" style="width:18px"></i></button>
+            </div>
+        </header>
+
+        <div class="filter-wrapper">
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="setFilter('all', this)"><i data-lucide="layout-grid"></i> Tất cả</button>
+                <button class="filter-btn" onclick="setFilter('new', this)"><i data-lucide="user-plus"></i> Mới</button>
+                <button class="filter-btn" onclick="setFilter('called', this)"><i data-lucide="check-check"></i> Đã gọi</button>
+            </div>
+        </div>
+
+        <div class="list-container" id="mobile-list"></div>
+        <div class="pagination" id="pagination-controls"></div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2 style="text-align:center; margin-bottom:20px; font-size:1.1rem; font-weight:800;">CẬP NHẬT THÔNG TIN</h2>
+            <input type="hidden" id="edit-id">
+            <label class="form-label">Tên khách hàng</label>
+            <input type="text" id="edit-name" class="form-input">
+            <label class="form-label">Số điện thoại</label>
+            <input type="tel" id="edit-phone" class="form-input">
+            <label class="form-label">Dịch vụ</label>
+            <select id="edit-sport" class="form-input"><option value="Pickleball">Pickleball</option><option value="Bida">Bida</option></select>
+            <label class="form-label">Địa chỉ</label>
+            <input type="text" id="edit-address" class="form-input">
+            <label class="form-label">Quy mô</label>
+            <input type="text" id="edit-scale" class="form-input">
+            <div style="display:grid; grid-template-columns: 1fr 2fr; gap:10px; margin-top:10px">
+                <button onclick="closeModal()" style="height:50px; border-radius:14px; border:none; font-weight:700; background:#f1f5f9">Đóng</button>
+                <button onclick="saveEdit()" style="height:50px; border-radius:14px; border:none; background:var(--primary); color:white; font-weight:700;">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLXIdiehtoCfRKH9qQYU2u5IoRDk7KmxM",
+            authDomain: "quanlykhachhangvar.firebaseapp.com",
+            databaseURL: "https://quanlykhachhangvar-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "quanlykhachhangvar",
+            storageBucket: "quanlykhachhangvar.firebasestorage.app",
+            messagingSenderId: "445137801788",
+            appId: "1:445137801788:web:a5007ec21d3c8671eba939"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        let allData = [];
+        let currentFilter = 'all';
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) { 
+                document.getElementById('admin-mobile-section').style.display = 'block'; 
+                // Cập nhật tên viết tắt từ email
+                if(user.email) document.getElementById('user-initials').innerText = user.email.substring(0,2).toUpperCase();
+                fetchData(); 
+            } else { window.location.href = 'login.html'; }
+        });
+
+        window.handleLogout = () => signOut(auth);
+
+        function fetchData() {
+            onValue(ref(database, 'registrations'), (snapshot) => {
+                const data = snapshot.val();
+                allData = data ? Object.entries(data).reverse().map(([id, val]) => ({ id, ...val })) : [];
+                renderUI();
+            });
+        }
+
+        window.setFilter = (f, btn) => {
+            currentFilter = f; currentPage = 1;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderUI();
+        };
+
+        function renderUI() {
+            let filtered = allData;
+            if (currentFilter === 'new') filtered = allData.filter(d => d.status !== 'called');
+            if (currentFilter === 'called') filtered = allData.filter(d => d.status === 'called');
+
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage;
+            const items = filtered.slice(start, start + itemsPerPage);
+
+            const list = document.getElementById('mobile-list');
+            list.innerHTML = items.length ? "" : "<div style='text-align:center; padding:100px 20px; color:#94a3b8;'><i data-lucide='inbox' style='width:40px; margin-bottom:10px;'></i><p>Không có dữ liệu</p></div>";
+            
+            items.forEach(val => {
+                const isCalled = val.status === 'called';
+                list.innerHTML += `
+                    <div class="card ${isCalled ? 'status-called' : ''}">
+                        <div class="card-top">
+                            <span class="badge badge-${val.sport?.toLowerCase()}">${val.sport}</span>
+                            <span class="date">${val.timestamp?.split(' ')[0] || ''}</span>
+                        </div>
+                        <p class="name">${val.name}</p>
+                        <a href="tel:${val.phone}" class="phone-link">${val.phone}</a>
+                        <div class="info-row"><i data-lucide="map-pin" class="info-icon"></i> ${val.address}</div>
+                        <div class="info-row"><i data-lucide="maximize" class="info-icon"></i> Quy mô: ${val.scale}</div>
+                        <div class="actions">
+                            <button class="btn-action btn-check ${isCalled ? 'is-called' : ''}" onclick="toggleStatus('${val.id}', '${val.status}')">
+                                <i data-lucide="${isCalled ? 'rotate-ccw' : 'check-circle'}"></i> ${isCalled ? 'KHÔI PHỤC' : 'XÁC NHẬN'}
+                            </button>
+                            <button class="btn-action btn-edit" onclick="openEdit('${val.id}')"><i data-lucide="edit-3"></i> SỬA</button>
+                            <button class="btn-action btn-delete" onclick="handleDelete('${val.id}')"><i data-lucide="trash-2"></i> XÓA</button>
+                        </div>
+                    </div>`;
+            });
+
+            renderPagination(totalPages);
+            lucide.createIcons();
+            if (currentPage > 1) window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderPagination(total) {
+            const container = document.getElementById('pagination-controls');
+            container.innerHTML = "";
+            if (total <= 1) return;
+
+            const addBtn = (p, text, active = false, disabled = false) => {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${active ? 'active' : ''}`;
+                btn.disabled = disabled;
+                btn.innerText = text;
+                btn.onclick = () => { currentPage = p; renderUI(); };
+                container.appendChild(btn);
+            };
+
+            addBtn(currentPage - 1, "<<", false, currentPage === 1);
+            for (let i = 1; i <= total; i++) {
+                if (i === 1 || i === total || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    addBtn(i, i, i === currentPage);
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    const dots = document.createElement('span'); dots.innerText = "..."; dots.style.color = "#94a3b8";
+                    container.appendChild(dots);
+                }
+            }
+            addBtn(currentPage + 1, ">>", false, currentPage === total);
+        }
+
+        window.toggleStatus = (id, cur) => update(ref(database, 'registrations/' + id), { status: cur === 'called' ? 'new' : 'called' });
+        window.handleDelete = (id) => { if(confirm("Xóa khách hàng này?")) remove(ref(database, 'registrations/' + id)); };
+        
+        window.openEdit = (id) => {
+            const d = allData.find(x => x.id === id);
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-name').value = d.name || '';
+            document.getElementById('edit-phone').value = d.phone || '';
+            document.getElementById('edit-sport').value = d.sport || 'Pickleball';
+            document.getElementById('edit-address').value = d.address || '';
+            document.getElementById('edit-scale').value = d.scale || '';
+            document.getElementById('editModal').style.display = 'block';
+        };
+
+        window.closeModal = () => document.getElementById('editModal').style.display = 'none';
+        window.saveEdit = () => {
+            const id = document.getElementById('edit-id').value;
+            const up = { name: document.getElementById('edit-name').value, phone: document.getElementById('edit-phone').value, sport: document.getElementById('edit-sport').value, address: document.getElementById('edit-address').value, scale: document.getElementById('edit-scale').value };
+            update(ref(database, 'registrations/' + id), up).then(() => closeModal());
+        };
+        lucide.createIcons();
+    </script>
+</body>
+</html>
