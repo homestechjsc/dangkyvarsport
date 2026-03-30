@@ -197,9 +197,10 @@ const telegram_chat_id = '-1003762358550'; // Đảm bảo không có dấu các
 
 console.log("Đang gửi đến ID:", telegram_chat_id); // Dòng này để kiểm tra trong Console
 
-const message = `🔔 VARSPORT: CÓ KHÁCH MỚI!\n` +
+const message = `🔔 Đăng Ký: CÓ KHÁCH MỚI!\n` +
                 `👤 Tên: ${name}\n` +
-                `📞 SĐT: ${phone}`;
+                `📱 SĐT: ${phone}\n`+
+                `🏡 ĐC: ${address}`;
 
 fetch(`https://api.telegram.org/bot${telegram_bot_token}/sendMessage`, {
     method: 'POST',
