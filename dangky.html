@@ -25,7 +25,7 @@
                 <ul class="nav-links" id="navLinks">
                     <li><a href="varsport.html">VarSport</a></li>
                     <li><a href="pmssport.html">PMSSport</a></li>
-					<li><a href="dangky.html">Đăng Ký</a></li>
+                    <li><a href="dangky.html">Đăng Ký</a></li>
                 </ul>
             </nav>
             <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
@@ -151,102 +151,118 @@
     </footer>
 
     <script type="module">
-        // Import Firebase SDKs từ CDN
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Cấu hình Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyDLXIdiehtoCfRKH9qQYU2u5IoRDk7KmxM",
-            authDomain: "quanlykhachhangvar.firebaseapp.com",
-            databaseURL: "https://quanlykhachhangvar-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "quanlykhachhangvar",
-            storageBucket: "quanlykhachhangvar.firebasestorage.app",
-            messagingSenderId: "445137801788",
-            appId: "1:445137801788:web:a5007ec21d3c8671eba939",
-            measurementId: "G-WHYLW6WR6V"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyDLXIdiehtoCfRKH9qQYU2u5IoRDk7KmxM",
+        authDomain: "quanlykhachhangvar.firebaseapp.com",
+        databaseURL: "https://quanlykhachhangvar-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "quanlykhachhangvar",
+        storageBucket: "quanlykhachhangvar.firebasestorage.app",
+        messagingSenderId: "445137801788",
+        appId: "1:445137801788:web:a5007ec21d3c8671eba939",
+        measurementId: "G-WHYLW6WR6V"
+    };
 
-        // Khởi tạo Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
-        // Xử lý gửi form
-        const form = document.getElementById('registration-form');
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
+    const form = document.getElementById('registration-form');
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-            // Lấy dữ liệu
-            const sport = document.getElementById('input-sport').value;
-            const name = document.getElementById('input-name').value;
-            const phone = document.getElementById('input-phone').value;
-            const address = document.getElementById('input-address').value;
-            const scale = document.getElementById('input-scale').value;
+        const sport = document.getElementById('input-sport').value;
+        const name = document.getElementById('input-name').value;
+        const phone = document.getElementById('input-phone').value;
+        const address = document.getElementById('input-address').value;
+        const scale = document.getElementById('input-scale').value;
 
-            // Lưu vào nhánh 'registrations' trên Firebase
-            const registrationsRef = ref(database, 'registrations');
-            const newRegistrationRef = push(registrationsRef);
+        const registrationsRef = ref(database, 'registrations');
+        const newRegistrationRef = push(registrationsRef);
 
-            set(newRegistrationRef, {
-                sport: sport,
-                name: name,
-                phone: phone,
-                address: address,
-                scale: scale,
-                timestamp: new Date().toLocaleString('vi-VN')
-            })
-            .then(() => {
-                alert(`Cảm ơn "${name}" đã đăng ký thành công! Chúng tôi sẽ liên hệ sớm nhất.`);
-                form.reset();
-            })
-            .catch((error) => {
-                console.error("Lỗi:", error);
-                alert("Gửi thông tin thất bại. Vui lòng thử lại!");
-            });
+        set(newRegistrationRef, {
+            sport: sport,
+            name: name,
+            phone: phone,
+            address: address,
+            scale: scale,
+            timestamp: new Date().toLocaleString('vi-VN')
+        })
+        .then(() => {
+            // --- CẤU HÌNH GỬI TELEGRAM (ĐÃ FIX LỖI BIẾN) ---
+            // --- ĐOẠN CODE TEST TRIỆT ĐỂ ---
+const telegram_bot_token = '8438573433:AAG4nQYSpz9fDT3yB284LRQrFuNSNorkakM';
+const telegram_chat_id = '-1003762358550'; // Đảm bảo không có dấu cách ở hai đầu
+
+console.log("Đang gửi đến ID:", telegram_chat_id); // Dòng này để kiểm tra trong Console
+
+const message = `🔔 VARSPORT: CÓ KHÁCH MỚI!\n` +
+                `👤 Tên: ${name}\n` +
+                `📞 SĐT: ${phone}`;
+
+fetch(`https://api.telegram.org/bot${telegram_bot_token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        chat_id: telegram_chat_id,
+        text: message
+    })
+})
+.then(res => res.json())
+.then(data => {
+    if (data.ok) {
+        console.log("✅ ĐÃ THÀNH CÔNG! Check Telegram đi Bảo!");
+    } else {
+        console.error("❌ Telegram từ chối vì:", data.description);
+    }
+})
+.catch(err => console.error("❌ Lỗi mạng:", err));
+
+            alert(`Cảm ơn "${name}" đã đăng ký thành công! Đội ngũ VARSport sẽ liên hệ sớm nhất.`);
+            form.reset();
+        })
+        .catch((error) => {
+            console.error("Lỗi Firebase:", error);
+            alert("Gửi thông tin thất bại.");
         });
+    });
 
-        // Hàm copy số điện thoại (Gắn vào window để gọi từ HTML)
-        window.copyPhoneNumber = function(e, phoneNumber) {
-            e.preventDefault();
-            navigator.clipboard.writeText(phoneNumber).then(() => {
-                const toast = document.getElementById('toast-message');
-                toast.innerHTML = `Đã lưu SĐT ${phoneNumber} trong bộ nhớ`;
-                toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            });
-        };
- // Header scroll effect
-        const header = document.getElementById('header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+    // Các hàm phụ trợ
+    window.copyPhoneNumber = function(e, phoneNumber) {
+        e.preventDefault();
+        navigator.clipboard.writeText(phoneNumber).then(() => {
+            const toast = document.getElementById('toast-message');
+            toast.innerHTML = `Đã lưu SĐT ${phoneNumber} trong bộ nhớ`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        });
+    };
+
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+    });
+
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navLinks = document.getElementById('navLinks');
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '100%';
+                navLinks.style.left = '0';
+                navLinks.style.right = '0';
+                navLinks.style.background = 'rgba(10, 22, 40, 0.98)';
+                navLinks.style.padding = '20px';
+                navLinks.style.gap = '16px';
+                navLinks.style.borderTop = '1px solid rgba(255,255,255,0.1)';
             }
         });
-      // Mobile menu toggle
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navLinks = document.getElementById('navLinks');
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', () => {
-                navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-                if (navLinks.style.display === 'flex') {
-                    navLinks.style.flexDirection = 'column';
-                    navLinks.style.position = 'absolute';
-                    navLinks.style.top = '100%';
-                    navLinks.style.left = '0';
-                    navLinks.style.right = '0';
-                    navLinks.style.background = 'rgba(10, 22, 40, 0.98)';
-                    navLinks.style.padding = '20px';
-                    navLinks.style.gap = '16px';
-                    navLinks.style.borderTop = '1px solid rgba(255,255,255,0.1)';
-                }
-            });
-        }
-        
-    </script>
+    }
+</script>
 </body>
-
 </html>
