@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VarSport - Giải Pháp All-In-One Cho Sân Pickleball & Bida</title>
     <meta name="description"
         content="VarSport cung cấp giải pháp all-in-one cho sân Pickleball & Bida: Check VAR, Tải Highlight, Quản lí sân thông minh.">
@@ -13,6 +13,19 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Thêm trực tiếp vào đây để đảm bảo khóa double tap zoom */
+        html, body {
+            touch-action: manipulation; /* Ngăn chặn delay 300ms và double tap zoom */
+            -webkit-text-size-adjust: 100%; /* Ngăn Safari tự phóng to chữ khi xoay ngang */
+        }
+        
+        /* Đảm bảo các nút bấm phản hồi tức thì */
+        button, .form-input, .nav-links a {
+            touch-action: manipulation;
+        }
+    </style>
 </head>
 
 <body>
@@ -50,6 +63,7 @@
                             <option value="" disabled selected>Dịch vụ</option>
                             <option value="Pickleball">Pickleball</option>
                             <option value="Bida">Bida</option>
+                            <option value="Khác">Khác</option>
                         </select>
                         <input type="text" id="input-name" class="form-input" placeholder="Tên khách hàng" required>
                     </div>
@@ -60,7 +74,7 @@
                         <input type="text" id="input-address" class="form-input" placeholder="Địa chỉ" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="input-scale" class="form-input" placeholder="Quy mô" required>
+                        <input type="text" id="input-scale" class="form-input" placeholder="Số lượng sân hiện tại" >
                     </div>
                     <button type="submit" class="btn-submit" id="btn-submit">ĐĂNG KÝ NGAY</button>
                 </form>
@@ -190,35 +204,33 @@
             timestamp: new Date().toLocaleString('vi-VN')
         })
         .then(() => {
-            // --- CẤU HÌNH GỬI TELEGRAM (ĐÃ FIX LỖI BIẾN) ---
-            // --- ĐOẠN CODE TEST TRIỆT ĐỂ ---
-const telegram_bot_token = '8438573433:AAG4nQYSpz9fDT3yB284LRQrFuNSNorkakM';
-const telegram_chat_id = '-1003762358550'; // Đảm bảo không có dấu cách ở hai đầu
+            const telegram_bot_token = '8438573433:AAG4nQYSpz9fDT3yB284LRQrFuNSNorkakM';
+            const telegram_chat_id = '-1003762358550';
 
-console.log("Đang gửi đến ID:", telegram_chat_id); // Dòng này để kiểm tra trong Console
+            console.log("Đang gửi đến ID:", telegram_chat_id);
 
-const message = `🔔 Đăng Ký: CÓ KHÁCH MỚI!\n` +
-                `👤 Tên: ${name}\n` +
-                `📱 SĐT: ${phone}\n`+
-                `🏡 ĐC: ${address}`;
+            const message = `🔔 Đăng Ký: CÓ KHÁCH MỚI!\n` +
+                            `👤 Tên: ${name}\n` +
+                            `📱 SĐT: ${phone}\n`+
+                            `🏡 ĐC: ${address}`;
 
-fetch(`https://api.telegram.org/bot${telegram_bot_token}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-        chat_id: telegram_chat_id,
-        text: message
-    })
-})
-.then(res => res.json())
-.then(data => {
-    if (data.ok) {
-        console.log("✅ ĐÃ THÀNH CÔNG! Check Telegram đi Bảo!");
-    } else {
-        console.error("❌ Telegram từ chối vì:", data.description);
-    }
-})
-.catch(err => console.error("❌ Lỗi mạng:", err));
+            fetch(`https://api.telegram.org/bot${telegram_bot_token}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: telegram_chat_id,
+                    text: message
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.ok) {
+                    console.log("✅ ĐÃ THÀNH CÔNG! Check Telegram đi Bảo!");
+                } else {
+                    console.error("❌ Telegram từ chối vì:", data.description);
+                }
+            })
+            .catch(err => console.error("❌ Lỗi mạng:", err));
 
             alert(`Cảm ơn "${name}" đã đăng ký thành công! Đội ngũ VARSport sẽ liên hệ sớm nhất.`);
             form.reset();
@@ -264,6 +276,16 @@ fetch(`https://api.telegram.org/bot${telegram_bot_token}/sendMessage`, {
             }
         });
     }
+
+    // Script bổ trợ ngăn chặn double tap zoom trên iOS Safari
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
 </script>
 </body>
 </html>
